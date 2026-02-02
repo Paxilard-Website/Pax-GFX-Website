@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Order — Paxilard GFX</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-top:#000000;
+      --bg-mid:#405385;
+      --bg-end:#163C82;
+      --accent:#39FDE3;
+      --muted:#9aa0b4;
+      --white:#ffffff;
+      --text-dark:#0b0b0b;
+      --card-bg:#ffffff;
+      --radius:12px;
+      --max-width:980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background: linear-gradient(137deg, rgba(0,0,0,1) 1%, rgba(64,83,133,1) 100%, rgba(22,60,130,1) 100%);color:var(--white)}
+    .container{max-width:var(--max-width);margin:36px auto;padding:24px;position:relative;z-index:1}
+    .back{display:inline-block;margin-bottom:18px;color:var(--white);text-decoration:none;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)}
+    .order-card{display:grid;grid-template-columns:380px 1fr;gap:20px;align-items:start}
+    @media (max-width:880px){ .order-card{grid-template-columns:1fr} }
+
+    .product-preview{background:linear-gradient(180deg,#111217,#0b0b0d);padding:16px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.03)}
+    .product-preview img{width:100%;height:320px;object-fit:cover;border-radius:8px}
+    .product-preview h2{color:var(--white);margin-top:12px;display:flex;align-items:center;gap:10px;justify-content:space-between}
+    .product-preview p{color:var(--muted);margin:6px 0}
+
+    .product-info{padding:16px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.06);background: var(--card-bg);color: var(--text-dark)}
+    h1{margin:0 0 8px 0;font-family:Montserrat;font-weight:900;color:var(--text-dark)}
+    p.muted{color:rgba(0,0,0,0.6);margin:0 0 12px 0}
+    label{display:block;font-size:13px;color:rgba(0,0,0,0.6);margin-bottom:6px}
+    input[type="text"], input[type="email"], textarea{width:100%;padding:12px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:transparent;color:var(--text-dark);font-size:14px;outline:none}
+    textarea{min-height:160px;resize:vertical}
+    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .btn{background:var(--accent);color:#001;padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.08);color:var(--white)}
+    .note{color:rgba(0,0,0,0.6);font-size:13px;margin-top:10px}
+
+    .links-row{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
+    .twitter-link, .discord-link {display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;border:1px solid rgba(0,0,0,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:var(--text-dark);font-weight:800}
+    .twitter-emoji{width:28px;height:28px;display:block;object-fit:contain}
+    .discord-icon{width:28px;height:28px;display:block;object-fit:contain}
+
+    .price-line{font-weight:800;margin-top:10px;color:#001}
+
+    .small-muted{font-size:13px;color:rgba(0,0,0,0.6);margin-top:8px}
+
+    .status { margin-top:12px; padding:10px;border-radius:8px; display:none; }
+    .status.success { background: #e6fffa; color:#002; border:1px solid rgba(57,253,227,0.12) }
+    .status.error { background: #ffe6e6; color:#400; border:1px solid rgba(255,107,107,0.12) }
+
+    /* FAQ */
+    .faq{margin-top:22px;padding:14px;border-radius:10px;background:#f7f7f7;color:#111;border:1px solid rgba(0,0,0,0.06)}
+    .faq h3{margin:0 0 8px 0;font-family:Montserrat;font-size:16px}
+    .faq p{margin:6px 0;color:#333;font-size:14px}
+    .faq ul{margin:8px 0 0 18px;color:#333}
+    .meta-row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .time-badge{background:#001;padding:8px 12px;border-radius:8px;color:#fff;font-weight:700}
+
+    .preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:9999}
+    .preview-overlay .container{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:92%;max-height:92%}
+    .preview-overlay img{max-width:100%;max-height:calc(92vh - 80px);border-radius:12px;object-fit:contain}
+    .preview-caption{color:#fff;font-weight:700;background:rgba(0,0,0,0.45);padding:8px 12px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Back to shop</a>
+
+    <div id="orderArea" class="order-card" aria-live="polite">
+      <div class="product-preview" id="productPreview">
+        <img id="prodImg" src="" alt="Product preview">
+        <h2 id="prodTitle">
+          <span id="prodTitleText">Product</span>
+        </h2>
+        <p id="prodDesc" class="muted"></p>
+
+        <!-- Preview button placed under the product name -->
+        <div style="margin-top:10px;">
+          <button id="previewUnderProduct" class="btn ghost" type="button" aria-label="Preview product">Preview</button>
+        </div>
+      </div>
+
+      <div class="product-info">
+        <h1>Place your order</h1>
+        <p class="muted">Tell Pax exactly how you want your GFX.DM him for references, text, colors, and any deadlines.</p>
+
+        <p class="price-line" id="prodPrice">Price: —</p>
+
+    
+
+          <!-- Hidden fields -->
+          <input type="hidden" id="productField" name="product" value="">
+          <input type="hidden" id="priceField" name="price" value="">
+          <input type="hidden" id="currencyField" name="currency" value="USD">
+
+          <div class="small-muted">To purchase, DM Paxilard on X (Twitter) or message on Discord. Use the preview button above the product to inspect the artwork.</div>
+
+          <div class="links-row" id="contactOptions">
+            <a id="twitterLink" class="twitter-link" href="https://x.com/paxilard" target="_blank" rel="noopener noreferrer" aria-label="Open Paxilard on X (Twitter)">
+              <img class="twitter-emoji" src="https://cdn.discordapp.com/emojis/1461014540589207687.webp?size=96" alt="Twitter emoji">
+              <span>DM on X (Twitter) — @paxilard</span>
+            </a>
+
+            <a id="discordLink" class="discord-link" href="https://discord.com/users/1254063084990107689" target="_blank" rel="noopener noreferrer" aria-label="Open Paxilard on Discord">
+              <img class="discord-icon" src="https://cdn.discordapp.com/emojis/948151312837672971.webp?size=96" alt="Discord icon">
+              <span>Message on Discord — paxilard.</span>
+            </a>
+          </div>
+
+          <div class="meta-row">
+            <div class="time-badge" id="nyTime">— Time for Pax —</div>
+          </div>
+
+          <div id="statusBox" class="status" role="status" aria-live="polite" style="display:none"></div>
+
+          <!-- FAQ -->
+          <div class="faq" aria-labelledby="faqHeading">
+            <h3 id="faqHeading">FAQ</h3>
+
+            <p><strong>Payment methods accepted</strong></p>
+            <ul>
+              <li>Venmo</li>
+              <li>e‑gift cards (Amazon)</li>
+              <li>Xbox gift cards</li>
+              <li>eBay gift cards</li>
+            </ul>
+            <div style="font-size:12px;color:#666;margin-top:6px">Depending on region.</div>
+
+            <p style="margin-top:12px"><strong>Turnaround time</strong></p>
+            <p>Typical turnaround is <strong>2–5 business days</strong> depending on queue and complexity. Rush requests may be available for an extra fee — DM for details.</p>
+
+            <p style="margin-top:12px"><strong>Revision policy</strong></p>
+            <p>Each order includes <strong>one free revision</strong>. Additional revisions may incur a small fee depending on scope. Please include clear revision requests in your DM.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview overlay -->
+  <div class="preview-overlay" id="previewOverlay" role="dialog" aria-hidden="true">
+    <div class="container" id="previewContainer">
+      <img id="previewImg" alt="Preview">
+      <div class="preview-caption" id="previewCaption"></div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // Product catalog (use same asset URLs as index's BUY GFX area)
+      const products = {
+        posters: {
+          id: 'posters',
+          title: 'Posters',
+          priceRaw: 10,
+          img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/a60aa4240633673.697e4b0539fdc.png',
+          desc: 'Custom poster design by Paxilard'
+        },
+        banners: {
+          id: 'banners',
+          title: 'Banners',
+          priceRaw: 10,
+          img: 'https://mir-s3-cdn-cf.behance.net/project_modules/2800_opt_1/23d4a3239427931.697caeb23876f.png',
+          desc: 'Custom banner and header designs'
+        },
+        jersey: {
+          id: 'jersey',
+          title: 'Jersey / Jersey poster',
+          priceRaw: 20,
+          img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/3f0b04241932731.6979469b7a9ca.png',
+          desc: 'Jersey mockups and poster designs'
+        },
+        thumbnails: {
+          id: 'thumbnails',
+          title: 'Thumbnails',
+          priceRaw: 8,
+          img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/699679235021193.6942a9600a3a1.png',
+          desc: 'YouTube / Twitch thumbnails'
+        },
+        logo: {
+          id: 'logo',
+          title: 'Logo / PFP',
+          priceRaw: 5,
+          img: 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/919c19243030341.69793e0e6df29.png',
+          desc: 'Logo and profile picture design'
+        }
+      };
+
+      // Elements
+      const prodImg = document.getElementById('prodImg');
+      const prodTitleText = document.getElementById('prodTitleText');
+      const prodDesc = document.getElementById('prodDesc');
+      const prodPrice = document.getElementById('prodPrice');
+      const productField = document.getElementById('productField');
+      const priceField = document.getElementById('priceField');
+      const currencyField = document.getElementById('currencyField');
+      const previewUnderProduct = document.getElementById('previewUnderProduct');
+      const previewOverlay = document.getElementById('previewOverlay');
+      const previewImg = document.getElementById('previewImg');
+      const previewCaption = document.getElementById('previewCaption');
+      const nyTimeEl = document.getElementById('nyTime');
+
+      // FX config (sync with index)
+      const API_URL = 'https://open.er-api.com/v6/latest/USD';
+      const RATES_KEY = 'pax_fx_rates';
+      const CURRENCY_KEY = 'pax_currency';
+
+      // Helper: determine product key (URL -> localStorage -> draft -> default)
+      function getProductKey(){
+        const urlKey = new URLSearchParams(window.location.search).get('product');
+        if(urlKey && products[urlKey]) return urlKey;
+
+        try{
+          const stored = localStorage.getItem('pax_selected_product');
+          if(stored && products[stored]) {
+            localStorage.removeItem('pax_selected_product');
+            return stored;
+          }
+        }catch(e){}
+
+        try{
+          const draft = JSON.parse(localStorage.getItem('paxilard_order_draft') || '{}');
+          if(draft && draft.product){
+            const key = Object.keys(products).find(k => products[k].title.toLowerCase().includes(draft.product.toLowerCase()));
+            if(key) return key;
+          }
+        }catch(e){}
+
+        return 'posters';
+      }
+
+      // Fetch and cache rates (1 hour)
+      async function fetchRates(){
+        try{
+          const cached = sessionStorage.getItem(RATES_KEY);
+          if(cached){
+            const obj = JSON.parse(cached);
+            if(Date.now() - obj.ts < 1000*60*60) return obj.rates;
+          }
+          const res = await fetch(API_URL);
+          if(!res.ok) throw new Error('Failed to fetch rates');
+          const json = await res.json();
+          const rates = json.rates || {};
+          sessionStorage.setItem(RATES_KEY, JSON.stringify({ts:Date.now(), rates}));
+          return rates;
+        }catch(e){
+          const cached = sessionStorage.getItem(RATES_KEY);
+          return cached ? JSON.parse(cached).rates : null;
+        }
+      }
+
+      function formatCurrency(amount, currency){
+        try{
+          return new Intl.NumberFormat(undefined, { style:'currency', currency }).format(amount);
+        }catch(e){
+          return currency + ' ' + amount.toFixed(2);
+        }
+      }
+
+      async function priceTextFor(priceRaw, currency){
+        if(!currency || currency === 'USD') return formatCurrency(priceRaw, 'USD');
+        const rates = await fetchRates();
+        if(!rates || !rates[currency]) return formatCurrency(priceRaw, 'USD');
+        const converted = priceRaw * rates[currency];
+        return formatCurrency(converted, currency);
+      }
+
+      // Load product into UI and set hidden fields; currency is synced from index via localStorage
+      async function loadProduct(key){
+        const item = products[key] || products['posters'];
+        prodImg.src = item.img;
+        prodImg.alt = item.title;
+        prodTitleText.textContent = item.title;
+        prodDesc.textContent = item.desc;
+        productField.value = item.id;
+        priceField.value = item.priceRaw; // raw USD
+
+        const currency = (localStorage.getItem(CURRENCY_KEY) || 'USD').toUpperCase();
+        currencyField.value = currency;
+
+        const display = await priceTextFor(item.priceRaw, currency);
+        prodPrice.textContent = `Price: ${display}`;
+
+        previewCaption.textContent = item.title;
+        document.title = `Order — ${item.title} — Paxilard`;
+      }
+
+      // Preview open/close
+      function openPreview(src, title){
+        previewImg.src = src;
+        previewCaption.textContent = title;
+        previewOverlay.style.display = 'flex';
+        previewOverlay.setAttribute('aria-hidden','false');
+        function onKey(e){ if(e.key === 'Escape') closePreview(); }
+        function onClick(e){ if(e.target === previewOverlay) closePreview(); }
+        function closePreview(){
+          previewOverlay.style.display = 'none';
+          previewOverlay.setAttribute('aria-hidden','true');
+          document.removeEventListener('keydown', onKey);
+          previewOverlay.removeEventListener('click', onClick);
+        }
+        document.addEventListener('keydown', onKey);
+        previewOverlay.addEventListener('click', onClick);
+      }
+
+      // Wire preview button
+      previewUnderProduct.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const key = currentKey || getProductKey();
+        const item = products[key] || products['posters'];
+        openPreview(item.img, item.title);
+      });
+
+      // Time for Pax
+      function updateNYTime(){
+        try{
+          const now = new Date();
+          const fmt = new Intl.DateTimeFormat(undefined, {
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+          nyTimeEl.textContent = `${fmt.format(now)} Time for Pax`;
+        }catch(e){
+          const now = new Date();
+          nyTimeEl.textContent = `${now.toLocaleTimeString()} Time for Pax`;
+        }
+      }
+      updateNYTime();
+      setInterval(updateNYTime, 30000);
+
+      // React to currency changes made on index.html (storage event)
+      window.addEventListener('storage', (e)=>{
+        if(e.key === CURRENCY_KEY || e.key === 'pax_currency_notify'){
+          (async ()=>{
+            const key = currentKey || getProductKey();
+            await loadProduct(key);
+          })();
+        }
+      });
+
+      // Track current product
+      let currentKey = null;
+
+      // Initialize
+      (async function init(){
+        currentKey = getProductKey();
+        await loadProduct(currentKey);
+
+        window._pax_order_load = async function(key){
+          if(products[key]) {
+            currentKey = key;
+            const url = new URL(window.location.href);
+            url.searchParams.set('product', key);
+            window.history.replaceState({}, '', url.toString());
+            await loadProduct(key);
+          }
+        };
+      })();
+
+    })();
+  </script>
+</body>
+</html>

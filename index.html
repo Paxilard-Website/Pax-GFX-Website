@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Paxilard — GFX Artist Portfolio & Shop</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --topbar-height:56px;
+      --accent-1:#39FDE3;
+      --accent-2:#ff6b6b;
+      --muted:#9aa0b4;
+      --text:#ffffff;
+      --control-border:rgba(255,255,255,0.06);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--text)}
+
+    /* Full-page gradient (flows to bottom) */
+    html {
+      background: #000000;
+      background: linear-gradient(137deg, rgba(0, 0, 0, 1) 1%, rgba(64, 83, 133, 1) 100%, rgba(22, 60, 130, 1) 100%);
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    body{
+      padding-top:var(--topbar-height);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Topbar */
+    .topbar{
+      position:fixed; inset:0 0 auto 0; height:var(--topbar-height);
+      display:flex; align-items:center; gap:12px; padding:8px 18px;
+      background: linear-gradient(180deg, rgba(6,10,12,0.98), rgba(2,3,4,0.95));
+      border-bottom:1px solid rgba(255,255,255,0.04);
+      z-index:999;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo-small{width:44px;height:44px;border-radius:10px;overflow:hidden;border:1px solid var(--control-border);background:#000;padding:4px}
+    .logo-small img{width:100%;height:100%;object-fit:cover;display:block}
+    .brand-title{font-weight:900;font-family:Montserrat;font-size:20px;color:var(--text)}
+
+    /* Header layout: left logo, center meta, right actions aligned */
+    .container{max-width:1300px;margin:28px auto;padding:24px;position:relative;flex:1 0 auto}
+    header{
+      display:flex;
+      align-items:center;
+      gap:20px;
+      margin-bottom:18px;
+      justify-content:space-between;
+    }
+
+    .left-block{display:flex;align-items:center;gap:18px;min-width:0}
+    .logo{width:96px;height:96px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, rgba(57,253,227,0.08), rgba(255,107,107,0.06));border:1px solid rgba(255,255,255,0.04)}
+    .logo img{width:100%;height:100%;object-fit:cover}
+
+    .hero-meta{flex:1;min-width:0}
+    .title{font-family:Montserrat;font-weight:900;font-size:24px;margin:0 0 6px 0}
+    .subtitle{color:var(--muted);font-size:14px;margin:0}
+
+    /* Right actions: Behance + currency aligned vertically center */
+    .right-actions{display:flex;align-items:center;gap:12px;margin-left:12px}
+    .behance {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:6px 10px;
+      border-radius:12px;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:700;
+      border:1.2px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 8px 20px rgba(2,6,23,0.45);
+      min-width:140px;
+    }
+    .behance-icon {
+      width:26px;
+      height:26px;
+      border-radius:8px;
+      overflow:hidden;
+      display:inline-block;
+      background:#0b0b0b;
+      padding:3px;
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.55), inset 0 2px 6px rgba(255,255,255,0.03);
+      flex:0 0 auto;
+    }
+    .behance-icon img{width:100%;height:100%;object-fit:cover;display:block;border-radius:6px}
+    .behance-label{font-size:13px;font-weight:800;white-space:nowrap}
+
+    /* Currency control */
+    .currency-wrap{
+      position:relative;display:inline-flex;align-items:center;gap:10px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:8px 12px;border-radius:12px;border:1px solid var(--control-border);font-weight:800;font-size:14px;min-width:120px;
+    }
+    .currency-flag{font-size:16px}
+    .currency-label{font-size:14px;font-weight:900}
+    .currency-arrow{width:8px;height:8px;border-right:2px solid var(--text);border-bottom:2px solid var(--text);transform:rotate(45deg);opacity:0.85;margin-left:auto}
+    .currency-menu{position:absolute;top:calc(100% + 8px);right:0;background:linear-gradient(180deg,#0b0b0b,#060606);border:1px solid var(--control-border);border-radius:12px;width:220px;display:none;flex-direction:column;padding:8px;z-index:9999}
+    .currency-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:var(--text);font-weight:800;cursor:pointer}
+    .currency-option:hover, .currency-option[aria-selected="true"]{background:#0f0f10}
+
+    /* Banner */
+    .banner{margin:18px 0 28px;border-radius:14px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.04);background:#000}
+    .banner img{width:100%;height:320px;object-fit:cover;display:block}
+    .banner .cta{position:absolute;left:28px;bottom:28px;padding:12px 16px;border-radius:10px;background:rgba(0,0,0,0.6);color:var(--text);font-weight:800;border:1px solid rgba(57,253,227,0.08)}
+
+    .three-d{font-family: Montserrat;font-weight:900;font-size:28px;margin-bottom:12px}
+
+    /* BUY GFX: 5 per row on wide screens */
+    .shop{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap:18px;
+      margin-bottom:36px;
+    }
+    .product{
+      background: linear-gradient(180deg, rgba(18,20,22,0.9), rgba(10,10,12,0.95));
+      border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.03);
+      overflow:hidden;box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+      transition: transform .22s, box-shadow .22s;
+    }
+    .product:hover{transform:translateY(-8px);box-shadow: 0 20px 60px rgba(2,6,23,0.6)}
+    .imgwrap{height:160px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center}
+    .imgwrap img{width:100%;height:100%;object-fit:cover}
+    .meta{padding:12px 6px 0}
+    .name{font-weight:700}
+    .price{color:var(--muted);margin-top:6px;font-weight:700}
+    .buy{margin-top:12px;display:flex;gap:8px;align-items:center}
+    .btn{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#001;padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+
+    /* My Work: 5 per row on wide screens */
+    .work-grid{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap:14px;
+      margin-top:18px;
+      margin-bottom:36px;
+    }
+    .work-card{
+      background:rgba(255,255,255,0.02);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);
+      display:flex;flex-direction:column;text-decoration:none;transition:transform .22s,box-shadow .22s;cursor:pointer;
+    }
+    .work-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(2,6,23,0.6)}
+    .work-card img{width:100%;height:140px;object-fit:cover;display:block}
+    .work-card .caption{padding:10px;color:var(--muted);font-weight:700;font-size:13px}
+
+    footer{margin:48px 0 40px;color:var(--muted);text-align:center;font-size:13px}
+
+    .preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:9999}
+    .preview-overlay img{max-width:92%;max-height:92%;border-radius:12px}
+
+    /* Responsive breakpoints */
+    @media (max-width:1300px){
+      .shop, .work-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .imgwrap{height:150px}
+      .work-card img{height:150px}
+    }
+    @media (max-width:1100px){
+      .shop, .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .imgwrap{height:140px}
+      .work-card img{height:140px}
+    }
+    @media (max-width:800px){
+      .shop, .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      header{flex-direction:column;align-items:flex-start;gap:12px}
+      .right-actions{align-self:stretch;justify-content:space-between;width:100%}
+    }
+    @media (max-width:480px){
+      .shop, .work-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .logo-small{width:36px;height:36px}
+      .behance-icon{width:22px;height:22px;padding:2px}
+      .behance-label{font-size:12px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Top bar -->
+  <div class="topbar" role="region" aria-label="Top bar">
+    <div class="brand">
+      <div class="logo-small" aria-hidden="true">
+        <img src="https://cdn.discordapp.com/attachments/1467291262439915684/1467302848164401193/uyuuuiuuuyiyiy.png?ex=69813544&is=697fe3c4&hm=75a98ad8f5fb756719ab8f2b81a221fe5a19b589e7f077b14014caa301b19cb5&" alt="Paxilard small" loading="lazy">
+      </div>
+      <div class="brand-title">Paxilard</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="left-block">
+        <div class="logo">
+          <img src="https://media.discordapp.net/attachments/1467291262439915684/1467302848164401193/uyuuuiuuuyiyiy.png?ex=69813544&is=697fe3c4&hm=75a98ad8f5fb756719ab8f2b81a221fe5a19b589e7f077b14014caa301b19cb5&=&format=webp&quality=lossless" alt="Paxilard logo" loading="lazy">
+        </div>
+
+        <div class="hero-meta">
+          <h1 class="title">Paxilard</h1>
+          <p class="subtitle">Professional GFX artist — posters, banners, thumbnails and brand visuals.</p>
+        </div>
+      </div>
+
+      <div class="right-actions">
+        <!-- Behance embed -->
+        <a class="behance" href="https://www.behance.net/PAXILARD" target="_blank" rel="noopener noreferrer" aria-label="View Paxilard on Behance">
+          <span class="behance-icon" aria-hidden="true">
+            <img src="https://cdn.discordapp.com/emojis/1467306220338679972.webp?size=96" alt="Behance icon" loading="lazy">
+          </span>
+          <span class="behance-label">View Paxilard on Behance</span>
+        </a>
+
+        <!-- Currency dropdown -->
+        <div class="currency-wrap" id="currencyWrap" role="button" aria-haspopup="listbox" aria-expanded="false" tabindex="0" aria-label="Select currency">
+          <span class="currency-flag" id="selectedFlag">🇺🇸</span>
+          <span class="currency-label" id="selectedLabel">USD</span>
+          <span class="currency-arrow" aria-hidden="true"></span>
+
+          <div class="currency-menu" id="currencyMenu" role="listbox" aria-label="Currency options">
+            <div class="currency-option" role="option" data-code="USD" aria-selected="false"><span class="opt-flag">🇺🇸</span><span>USD</span></div>
+            <div class="currency-option" role="option" data-code="AUD" aria-selected="false"><span class="opt-flag">🇦🇺</span><span>AUD</span></div>
+            <div class="currency-option" role="option" data-code="EUR" aria-selected="false"><span class="opt-flag">🇪🇺</span><span>EUR</span></div>
+            <div class="currency-option" role="option" data-code="GBP" aria-selected="false"><span class="opt-flag">🇬🇧</span><span>GBP</span></div>
+            <div class="currency-option" role="option" data-code="JPY" aria-selected="false"><span class="opt-flag">🇯🇵</span><span>JPY</span></div>
+            <div class="currency-option" role="option" data-code="CAD" aria-selected="false"><span class="opt-flag">🇨🇦</span><span>CAD</span></div>
+            <div class="currency-option" role="option" data-code="NZD" aria-selected="false"><span class="opt-flag">🇳🇿</span><span>NZD</span></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="banner">
+      <a href="https://imag1ne-shop.fourthwall.com/en-aud" target="_blank" rel="noopener noreferrer" style="display:block;position:relative;">
+        <img src="https://imgproxy.fourthwall.com/CcifLtd6GNiDmLNv_WF4b1-4KP1w8u6SEkHsJdo72Bo/w:1920/sm:1/enc/LiEKJ1cQ6eJIx0rA/WlHr08mgPjQ4p3fO/EiKXIswScKRtiFwc/R3voQ6eGeByh-vYU/KY6a2f93azxdLctC/CY0soWV5L9V2JjBX/w08drbHqwjktMEgK/UJPDLV4dRut2IwvM/izjgFJ5dWV7NEydq/KPTzEgGkBFV189PH/iFZ0A4Dhy_zCyzMD/2hJzorU8r53YielE/BQPqrFvfLE51TIMm/0le2F5dtOaSRN5J9/_1q3x6zIhYzjrLIr/_2iH9qy-ya9xJ1IJ" alt="IMAG1NE merch banner" loading="lazy">
+        <div class="cta">Buy IMAG1NE merch today — Official store</div>
+      </a>
+    </div>
+
+    <section>
+      <h2 class="three-d">Buy GFX</h2>
+      <p style="color:var(--muted)">Click Buy to open the order page and tell Pax how you want your GFX. Prices update to the currency you select in the top bar.</p>
+
+      <!-- BUY GFX AREA -->
+      <div class="shop" id="products">
+        <div class="product" data-id="posters">
+          <div class="imgwrap"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/a60aa4240633673.697e4b0539fdc.png" alt="Posters" loading="lazy"></div>
+          <div class="meta">
+            <div class="name">Posters</div>
+            <div class="price" data-usd="10">$10 USD</div>
+            <div class="buy">
+              <a class="btn" href="order.html?product=posters" data-product="posters" onclick="try{ localStorage.setItem('pax_selected_product','posters'); }catch(e){}">Buy</a>
+              <button class="btn ghost" data-preview="posters">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product" data-id="banners">
+          <div class="imgwrap"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/2800_opt_1/23d4a3239427931.697caeb23876f.png" alt="Banners" loading="lazy"></div>
+          <div class="meta">
+            <div class="name">Banners</div>
+            <div class="price" data-usd="10">$10 USD</div>
+            <div class="buy">
+              <a class="btn" href="order.html?product=banners" data-product="banners" onclick="try{ localStorage.setItem('pax_selected_product','banners'); }catch(e){}">Buy</a>
+              <button class="btn ghost" data-preview="banners">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product" data-id="jersey">
+          <div class="imgwrap"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/3f0b04241932731.6979469b7a9ca.png" alt="Jersey poster" loading="lazy"></div>
+          <div class="meta">
+            <div class="name">Jersey / Jersey poster</div>
+            <div class="price" data-usd="20">$20 USD</div>
+            <div class="buy">
+              <a class="btn" href="order.html?product=jersey" data-product="jersey" onclick="try{ localStorage.setItem('pax_selected_product','jersey'); }catch(e){}">Buy</a>
+              <button class="btn ghost" data-preview="jersey">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product" data-id="thumbnails">
+          <div class="imgwrap"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/699679235021193.6942a9600a3a1.png" alt="Thumbnails" loading="lazy"></div>
+          <div class="meta">
+            <div class="name">Thumbnails</div>
+            <div class="price" data-usd="8">$8 USD</div>
+            <div class="buy">
+              <a class="btn" href="order.html?product=thumbnails" data-product="thumbnails" onclick="try{ localStorage.setItem('pax_selected_product','thumbnails'); }catch(e){}">Buy</a>
+              <button class="btn ghost" data-preview="thumbnails">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product" data-id="logo">
+          <div class="imgwrap"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/919c19243030341.69793e0e6df29.png" alt="Logo / PFP" loading="lazy"></div>
+          <div class="meta">
+            <div class="name">Logo / PFP</div>
+            <div class="price" data-usd="5">$5 USD</div>
+            <div class="buy">
+              <a class="btn" href="order.html?product=logo" data-product="logo" onclick="try{ localStorage.setItem('pax_selected_product','logo'); }catch(e){}">Buy</a>
+              <button class="btn ghost" data-preview="logo">Preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="three-d" style="margin-top:8px">My Work</h2>
+      <p style="color:var(--muted)">Selected projects and past work. Click to view full project on Behance.</p>
+
+      <div class="work-grid" id="myWork">
+        <a class="work-card" href="https://www.behance.net/gallery/243030341/PAXILARD-PFP/modules/1401969849" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/1336c7243030341.69793e0e6e6c8.png" alt="Work 1" loading="lazy">
+          <div class="caption">PFP — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/243030341/PAXILARD-PFP/modules/1403924927" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/e2d139243030341.697fa73120920.png" alt="Work 2" loading="lazy">
+          <div class="caption">PFP — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/241932731/PAXILARD-JERSEYS/modules/1403925043" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/1442b8241932731.697fa7594e305.png" alt="Work 3" loading="lazy">
+          <div class="caption">Jerseys — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/241932731/PAXILARD-JERSEYS/modules/1396968617" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/cbdcbd241932731.69695b29f0349.png" alt="Work 4" loading="lazy">
+          <div class="caption">Jerseys — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/240633673/PAXILARD-POSTERS/modules/1388362271" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/a4e623240633673.6949d6be7ba5c.png" alt="Work 5" loading="lazy">
+          <div class="caption">Posters — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/240633673/PAXILARD-POSTERS/modules/1389817425" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/b129f2240633673.69503f5717b34.png" alt="Work 6" loading="lazy">
+          <div class="caption">Posters — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/239427931/PAXILARD-BANNERS/modules/1403925519" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/2800_opt_1/ea472b239427931.697fa7c8196ae.png" alt="Work 7" loading="lazy">
+          <div class="caption">Banners — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/239427931/PAXILARD-BANNERS/modules/1398054875" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/b7c61a239427931.696d64db0e15b.png" alt="Work 8" loading="lazy">
+          <div class="caption">Banners — Paxilard</div>
+        </a>
+
+        <a class="work-card" href="https://www.behance.net/gallery/235021193/PAXILARD-THUMBNAIL/modules/1378523223" target="_blank" rel="noopener noreferrer">
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/40dc0d235021193.6928b4e1cd6b1.png" alt="Work 9" loading="lazy">
+          <div class="caption">Thumbnails — Paxilard</div>
+        </a>
+
+        <!-- New item added as requested (item 10) -->
+        <a class="work-card" href="https://www.behance.net/gallery/235021193/PAXILARD-THUMBNAIL/modules/1360489005" target="_blank" rel="noopener noreferrer">
+          <img src="https://cdn.discordapp.com/attachments/1465181389858275597/1467781447195824150/image.png?ex=6981a17f&is=69804fff&hm=454a18fa62830e08ef7d0db7b6ac787a2911396c9f4cf45a1a1c2ceaaa1ad127&" alt="Work 10" loading="lazy">
+          <div class="caption">Thumbnail — Paxilard</div>
+        </a>
+      </div>
+    </section>
+
+    <footer>© <strong>Paxilard</strong> — GFX Artist. <a href="https://www.behance.net/PAXILARD" target="_blank" rel="noopener noreferrer" style="color:var(--muted);text-decoration:none">View portfolio on Behance</a></footer>
+  </div>
+
+  <div class="preview-overlay" id="previewOverlay" role="dialog" aria-hidden="true">
+    <img id="previewImg" alt="Preview">
+  </div>
+
+  <div class="toast" id="toast" style="display:none;position:fixed;right:18px;bottom:18px;background:rgba(0,0,0,0.85);color:#fff;padding:10px 14px;border-radius:10px;font-weight:700;z-index:1300">Conversion updated</div>
+
+  <script>
+    (function(){
+      const API_URL = 'https://open.er-api.com/v6/latest/USD';
+      const STORAGE_KEY = 'pax_currency';
+      const RATES_KEY = 'pax_fx_rates';
+
+      const currencyWrap = document.getElementById('currencyWrap');
+      const currencyMenu = document.getElementById('currencyMenu');
+      const selectedFlag = document.getElementById('selectedFlag');
+      const selectedLabel = document.getElementById('selectedLabel');
+      const toast = document.getElementById('toast');
+
+      const priceEls = Array.from(document.querySelectorAll('.price'));
+
+      // Initialize selected currency from localStorage
+      const saved = (localStorage.getItem(STORAGE_KEY) || 'USD').toUpperCase();
+      setSelected(saved);
+
+      // Move saved currency option to top of the menu so it lines up visually
+      (function reorderCurrencyMenu(){
+        try{
+          const options = Array.from(currencyMenu.querySelectorAll('.currency-option'));
+          const match = options.find(o => o.getAttribute('data-code') === saved);
+          if(match){
+            options.forEach(o => o.setAttribute('aria-selected','false'));
+            match.setAttribute('aria-selected','true');
+            currencyMenu.insertBefore(match, currencyMenu.firstChild);
+          }
+        }catch(e){}
+      })();
+
+      priceEls.forEach(el=>{
+        if(!el.dataset.usd) {
+          const parsed = parseFloat(el.textContent.replace(/[^0-9.]/g,'')) || 0;
+          el.dataset.usd = parsed;
+        }
+      });
+
+      async function fetchRates(){
+        try{
+          const cached = sessionStorage.getItem(RATES_KEY);
+          if(cached){
+            const obj = JSON.parse(cached);
+            if(Date.now() - obj.ts < 1000*60*60) return obj.rates;
+          }
+          const res = await fetch(API_URL);
+          if(!res.ok) throw new Error('Failed to fetch rates');
+          const json = await res.json();
+          const rates = json.rates || {};
+          sessionStorage.setItem(RATES_KEY, JSON.stringify({ts:Date.now(), rates}));
+          return rates;
+        }catch(err){
+          const cached = sessionStorage.getItem(RATES_KEY);
+          return cached ? JSON.parse(cached).rates : null;
+        }
+      }
+
+      function formatCurrency(amount, currency){
+        try{
+          return new Intl.NumberFormat(undefined, { style:'currency', currency }).format(amount);
+        }catch(e){
+          return currency + ' ' + amount.toFixed(2);
+        }
+      }
+
+      async function updatePrices(currency, showToastOnChange = true){
+        const rates = await fetchRates();
+        let changed = false;
+        priceEls.forEach(el=>{
+          const usd = parseFloat(el.dataset.usd || 0);
+          let newText;
+          if(currency === 'USD' || !rates || !rates[currency]){
+            newText = formatCurrency(usd, 'USD');
+          } else {
+            const converted = usd * rates[currency];
+            newText = formatCurrency(converted, currency);
+          }
+          if(el.textContent !== newText) changed = true;
+          el.textContent = newText;
+        });
+        if(changed && showToastOnChange) showToast('Conversion updated');
+      }
+
+      function showToast(text){
+        toast.textContent = text;
+        toast.style.display = 'block';
+        clearTimeout(toast._t);
+        toast._t = setTimeout(()=> { toast.style.display = 'none'; }, 2200);
+      }
+
+      function setSelected(code){
+        const flags = { USD:'🇺🇸', AUD:'🇦🇺', EUR:'🇪🇺', GBP:'🇬🇧', JPY:'🇯🇵', CAD:'🇨🇦', NZD:'🇳🇿' };
+        const flag = flags[code] || '🏳️';
+        selectedFlag.textContent = flag;
+        selectedLabel.textContent = code;
+        try{ localStorage.setItem(STORAGE_KEY, code); }catch(e){}
+        try{ localStorage.setItem('pax_currency_notify', Date.now().toString()); }catch(e){}
+      }
+
+      function openMenu(){ currencyMenu.style.display = 'flex'; currencyWrap.setAttribute('aria-expanded','true'); }
+      function closeMenu(){ currencyMenu.style.display = 'none'; currencyWrap.setAttribute('aria-expanded','false'); }
+
+      currencyWrap.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(currencyMenu.style.display === 'flex') closeMenu(); else openMenu();
+      });
+
+      currencyWrap.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if(currencyMenu.style.display === 'flex') closeMenu(); else openMenu();
+        } else if(e.key === 'Escape') {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('click', (e)=>{
+        if(!currencyWrap.contains(e.target)) closeMenu();
+      });
+
+      // When a currency option is clicked, move it to top and update prices
+      document.querySelectorAll('.currency-option').forEach(opt=>{
+        opt.addEventListener('click', async ()=>{
+          const code = opt.getAttribute('data-code');
+          currencyMenu.insertBefore(opt, currencyMenu.firstChild);
+          document.querySelectorAll('.currency-option').forEach(o=>o.setAttribute('aria-selected','false'));
+          opt.setAttribute('aria-selected','true');
+          setSelected(code);
+          await updatePrices(code);
+          closeMenu();
+        });
+      });
+
+      updatePrices(saved, false);
+
+      setInterval(async ()=>{
+        const ratesBefore = sessionStorage.getItem(RATES_KEY) ? JSON.parse(sessionStorage.getItem(RATES_KEY)).rates : null;
+        const rates = await fetchRates();
+        const savedCurrency = localStorage.getItem(STORAGE_KEY) || 'USD';
+        const beforeJSON = ratesBefore ? JSON.stringify(ratesBefore) : null;
+        const afterJSON = rates ? JSON.stringify(rates) : null;
+        if(beforeJSON !== afterJSON){
+          await updatePrices(savedCurrency, true);
+        }
+      }, 1000 * 60 * 30);
+
+      // Preview handlers
+      document.querySelectorAll('[data-preview]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.getAttribute('data-preview');
+          const productEl = document.querySelector(`.product[data-id="${id}"]`);
+          if(!productEl) return;
+          const img = productEl.querySelector('.imgwrap img');
+          if(!img) return;
+          const overlay = document.getElementById('previewOverlay');
+          const previewImg = document.getElementById('previewImg');
+          previewImg.src = img.src;
+          overlay.style.display = 'flex';
+          overlay.setAttribute('aria-hidden','false');
+          overlay.addEventListener('click', function hide(){ overlay.style.display='none'; overlay.setAttribute('aria-hidden','true'); overlay.removeEventListener('click', hide); });
+        });
+      });
+
+      // Listen for currency changes from other tabs/pages
+      window.addEventListener('storage', (e)=>{
+        if(e.key === STORAGE_KEY || e.key === 'pax_currency_notify'){
+          const val = localStorage.getItem(STORAGE_KEY) || 'USD';
+          selectedLabel.textContent = val;
+          selectedFlag.textContent = {USD:'🇺🇸',AUD:'🇦🇺',EUR:'🇪🇺',GBP:'🇬🇧',JPY:'🇯🇵',CAD:'🇨🇦',NZD:'🇳🇿'}[val] || '🏳️';
+          updatePrices(val, false);
+          const opt = currencyMenu.querySelector(`.currency-option[data-code="${val}"]`);
+          if(opt) currencyMenu.insertBefore(opt, currencyMenu.firstChild);
+        }
+      });
+
+      window._pax_updatePrices = updatePrices;
+
+    })();
+  </script>
+</body>
+</html>
